@@ -1,0 +1,66 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@theme {
+  --font-display: var(--font-archivo-black), 'Archivo Black Fallback';
+  --font-sans: var(--font-inter-tight), 'Inter Tight Fallback';
+  --font-heading: var(--font-archivo-black), 'Archivo Black Fallback';
+  --font-mono: var(--font-geist-mono), 'Geist Mono Fallback';
+
+  /* Droplert palette */
+  --color-paper: #f4efd8;
+  --color-cream: #fff8dd;
+  --color-warm: #ffe6b7;
+  --color-ink: #171717;
+  --color-muted-ink: #6f6a5d;
+  --color-red: #e75b55;
+  --color-green: #21945e;
+  --color-pink: #e9447b;
+  --color-gray-warm: #6f6a5d;
+
+  /* Hard offset shadows */
+  --shadow-hard-sm: 2px 3px 0 #171717;
+  --shadow-hard-md: 4px 5px 0 #171717;
+  --shadow-hard-lg: 6px 7px 0 #171717;
+
+  /* Map shadcn tokens onto the palette */
+  --color-background: #f4efd8;
+  --color-foreground: #171717;
+  --color-card: #fff8dd;
+  --color-card-foreground: #171717;
+  --color-popover: #fff8dd;
+  --color-popover-foreground: #171717;
+  --color-primary: #e75b55;
+  --color-primary-foreground: #171717;
+  --color-secondary: #ffe6b7;
+  --color-secondary-foreground: #171717;
+  --color-muted: #ffe6b7;
+  --color-muted-foreground: #6f6a5d;
+  --color-accent: #ffe6b7;
+  --color-accent-foreground: #171717;
+  --color-destructive: #e75b55;
+  --color-border: #171717;
+  --color-input: #171717;
+  --color-ring: #171717;
+
+  --radius: 18px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    background-image: radial-gradient(rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+    background-size: 3px 3px;
+    color: var(--color-ink);
+  }
+  html {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
