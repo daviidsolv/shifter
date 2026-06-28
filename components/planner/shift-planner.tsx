@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   CalendarDays,
   ChevronLeft,
@@ -20,9 +20,11 @@ import {
   monthDates,
   monthGridDates,
   monthLabel,
+  normalizePlannerState,
   startOfMonth,
   toISO,
   type DaySchedule,
+  type PlannerPersistenceMode,
   type PlannerState,
   type Schedule,
   type Worker,
@@ -33,10 +35,17 @@ import { PlannerHeader } from "./planner-header"
 import { WorkersSheet } from "./workers-sheet"
 
 const EMPTY: DaySchedule = { normal: [], events: [] }
+const BROWSER_STORAGE_KEY = "shifter-planner-state-v1"
 
 type SaveStatus = "idle" | "saving" | "error"
 
-export function ShiftPlanner({ initialState }: { initialState: PlannerState }) {
+export function ShiftPlanner({
+  initialState,
+  persistenceMode = "server",
+}: {
+  initialState: PlannerState
+  persistenceMode?: PlannerPersistenceMode
+}) {
   const [venueId, setVenueId] = useState(VENUES[0].id)
   const [monthStart, setMonthStart] = useState(() => startOfMonth(new Date()))
   const [plannerState, setPlannerState] = useState<PlannerState>(initialState)
@@ -85,10 +94,26 @@ export function ShiftPlanner({ initialState }: { initialState: PlannerState }) {
     setEditKey((k) => k + 1)
   }
 
+  useEffect(() => {
+    if (persistenceMode !== "browser") return
+
+    const storedState = readBrowserPlannerState()
+    if (storedState) setPlannerState(storedState)
+  }, [persistenceMode])
+
   const persistState = useCallback(async (nextState: PlannerState) => {
     setSaveStatus("saving")
 
     try {
+      if (persistenceMode === "browser") {
+        window.localStorage.setItem(
+          BROWSER_STORAGE_KEY,
+          JSON.stringify(nextState),
+        )
+        setSaveStatus("idle")
+        return
+      }
+
       const response = await fetch("/api/planner", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -105,7 +130,7 @@ export function ShiftPlanner({ initialState }: { initialState: PlannerState }) {
     } catch {
       setSaveStatus("error")
     }
-  }, [])
+  }, [persistenceMode])
 
   const handleSave = (next: DaySchedule) => {
     if (!selectedDate) return
@@ -327,6 +352,16 @@ export function ShiftPlanner({ initialState }: { initialState: PlannerState }) {
   )
 }
 
+function readBrowserPlannerState(): PlannerState | null {
+  try {
+    const raw = window.localStorage.getItem(BROWSER_STORAGE_KEY)
+    if (!raw) return null
+    return normalizePlannerState(JSON.parse(raw))
+  } catch {
+    return null
+  }
+}
+
 function SyncStatus({ status }: { status: SaveStatus }) {
   if (status === "idle") return null
 
@@ -338,7 +373,7 @@ function SyncStatus({ status }: { status: SaveStatus }) {
         status === "saving" ? "bg-warm text-ink" : "bg-pink text-cream",
       )}
     >
-      {status === "saving" ? "GUARDANDO EN SERVIDOR" : "ERROR AL GUARDAR"}
+      {status === "saving" ? "GUARDANDO CAMBIOS" : "ERROR AL GUARDAR"}
     </div>
   )
 }
