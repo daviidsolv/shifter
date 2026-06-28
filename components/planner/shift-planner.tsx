@@ -501,13 +501,7 @@ async function downloadPlanningImage({
   drawRoundedRect(ctx, margin, 42, contentWidth, 204, 28, colors.red, colors.ink, 6)
   ctx.fillStyle = colors.ink
   ctx.font = "900 54px Arial Black, Impact, sans-serif"
-  ctx.fillText("PLANIFICACION GLOBAL", margin + 34, 112)
-  ctx.font = "800 34px Arial, sans-serif"
-  ctx.fillText("TODOS LOS LOCALES", margin + 34, 162)
-  ctx.font = "700 28px Arial, sans-serif"
-  ctx.fillStyle = colors.cream
-  ctx.fillText(monthLabel(monthStart).toUpperCase(), margin + 34, 202)
-
+  ctx.fillText("CUADRANTE", margin + 34, 112)
   let legendX = margin + 34
   for (const [index, v] of VENUES.entries()) {
     const fill = venueColors[index % venueColors.length]
@@ -522,12 +516,9 @@ async function downloadPlanningImage({
     )
     legendX += pillWidth + 12
   }
-
-  const statY = 74
-  const statWidth = 178
-  drawImageStat(ctx, width - margin - statWidth * 3 - 28, statY, statWidth, "LOCALES", VENUES.length, colors)
-  drawImageStat(ctx, width - margin - statWidth * 2 - 14, statY, statWidth, "APERTURAS", openVenueDays, colors)
-  drawImageStat(ctx, width - margin - statWidth, statY, statWidth, "ASIGN.", assignedCells, colors)
+  ctx.font = "700 28px Arial, sans-serif"
+  ctx.fillStyle = colors.cream
+  ctx.fillText(monthLabel(monthStart).toUpperCase(), margin + 34, 202)
 
   drawRoundedRect(
     ctx,
