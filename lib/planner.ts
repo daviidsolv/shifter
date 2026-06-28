@@ -167,7 +167,7 @@ export const WORKER_BG: Record<WorkerColor, string> = {
 }
 
 export const VENUES: Venue[] = [
-  { id: "mess", name: "MESS", openDays: [4, 5, 6] },
+  { id: "mess", name: "MESS", openDays: [5, 6] },
   { id: "loft", name: "LOFT", openDays: [5, 6] },
 ]
 
